@@ -1,1 +1,1 @@
-# GAN-Charbots
+# GAN-Chatbots
