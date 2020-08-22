@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*- 
-
-import os
-import time
-import json
 import tensorflow as tf
 import tensorflow.keras as keras
 import tensorflow.keras.layers as layers
-import numpy as np
-import pylab as pl
 
 """# **LSTM with ATTENTION**"""
 
@@ -16,11 +10,11 @@ class Attention(tf.keras.layers.Layer):
   def __init__(self, attention_units):
     super().__init__()
     # Dense layer for query (encoder's hidden state)
-    self.W1 = tf.keras.layers.Dense(attention_units)
+    self.W1 = layers.Dense(attention_units)
     # Dense layer for value (encoder's outputs)
-    self.W2 = tf.keras.layers.Dense(attention_units)
+    self.W2 = layers.Dense(attention_units)
     # Dense layer to compute attention score
-    self.V = tf.keras.layers.Dense(1)
+    self.V = layers.Dense(1)
 
   def call(self, query, values):
     # query: hidden state
@@ -51,8 +45,8 @@ class Encoder(tf.keras.Model):
     self.rnn_units = rnn_units
     self.embedding_dim = embedding_dim
     self.vocab_size = vocab_size
-    self.embedding = tf.keras.layers.Embedding(self.vocab_size, self.embedding_dim, mask_zero=True, name='encoder_embedding')
-    self.LSTM = tf.keras.layers.LSTM(self.rnn_units, return_state=True, return_sequences=True, name='encoder_lstm')
+    self.embedding = layers.Embedding(self.vocab_size, self.embedding_dim, mask_zero=True, name='encoder_embedding')
+    self.LSTM = layers.LSTM(self.rnn_units, return_state=True, return_sequences=True, name='encoder_lstm')
 
   def call(self, input , hidden_state, cell_state):
     x = self.embedding(input)
@@ -83,10 +77,7 @@ class AttentionLSTMCell(layers.AbstractRNNCell):
 
   @property
   def state_size(self):
-    return [BATCH_SIZE, self.units]#, [BATCH_SIZE, self.units]
-
-  def get_config(self):
-      return { 'units': self.units, 'vocab_size': self.vocab_size }
+    return [self.units, self.units]
 
   def call(self, value, states):
     query = tf.concat(states, -1)
@@ -98,7 +89,7 @@ class AttentionLSTMCell(layers.AbstractRNNCell):
     return softmax_out, states
 
 class Chatbot(keras.Model):
-  def __init__(self, rnn_units, embedding_dim, vocab_size, batch_size = 1):
+  def __init__(self, rnn_units, embedding_dim, vocab_size, batch_size=1):
     super(Chatbot, self).__init__()
 
     self.encoder = Encoder(rnn_units, embedding_dim, vocab_size, batch_size)
