@@ -7,9 +7,7 @@ GitHub dataset source: https://github.com/google-research-datasets/Taskmaster
 
 # Contributing
 
-For smaller changes, commit directly to `master` and make a pull request.
-
-For larger changes (e.g. new architecture, new dataset), make a new branch and make a pull requests when you think you're ready to merge.
+For any changes, make a new branch and pull request in order to merge to `master`.
 
 ### Formatting
 
